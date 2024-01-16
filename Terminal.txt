@@ -1,0 +1,54 @@
+CREATE TABLE Student (StudentID INT PRIMARY KEY, StudentName VARCHAR(50));
+CREATE TABLE Course (CourseID INT PRIMARY KEY, CourseName VARCHAR(50));
+INSERT INTO Student VALUES 
+(1,'Alice'),
+(2,'Bob'),
+(3,'Charlie'),
+(4,'David');
+
+INSERT INTO Course VALUES 
+(101,'Math'),
+(102,'English'),
+(103,'Science'),
+(104,'History');
+
+CREATE TABLE Enrollments (StudentID INT, CourseID INT);
+
+INSERT INTO Enrollments VALUES 
+(1,101),
+(1,102),
+(2,101),
+(3,102),
+(4,103);
+
+SELECT StudentName FROM Student
+WHERE StudentID IN (SELECT StudentID FROM Enrollments 
+					WHERE CourseID =
+					(SELECT CourseID FROM Course WHERE CourseName = 'Math' ) ) ;
+					
+	SELECT StudentName FROM Student 
+	WHERE StudentID 
+	NOT IN (SELECT StudentID FROM Enrollments);
+
+SELECT StudentName
+FROM Student
+WHERE 
+
+ StudentID IN (
+    SELECT StudentID
+    FROM Enrollments
+    WHERE CourseID = (SELECT CourseID FROM Course WHERE CourseName = 'Math')
+	
+    AND
+	
+ StudentID IN 
+	(SELECT StudentID 
+	 FROM Enrollments 
+	 WHERE CourseID = (SELECT CourseID FROM Course WHERE CourseName = 'English'))
+);
+SELECT StudentName FROM Student 
+WHERE EXISTS (SELECT 1 FROM Enrollments WHERE Enrollments.StudentID = Student.StudentID);
+
+SELECT StudentName FROM Student 
+WHERE NOT EXISTS (SELECT 1 FROM Enrollments WHERE Enrollments.StudentID = Student.StudentID);
+	
